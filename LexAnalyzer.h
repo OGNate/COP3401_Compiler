@@ -1,3 +1,6 @@
+#ifndef LA_H
+#define LA_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,3 +22,5 @@ void print_Lexeme_Array(lexeme *lexeme_Array, const int lexeme_Iterator);
 lexeme validNum_Check(FILE *inputFile, char digit);
 lexeme operand_Check(FILE *inputFile, char character);
 lexeme* LexMain(int argc, char *argv[]);
+
+#endif

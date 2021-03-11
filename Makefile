@@ -1,13 +1,16 @@
 COMP = gcc
 
-Compiler: CompilerMain.o LexAnalyzer.o
-	$(COMP) CompilerMain.o LexAnalyzer.o -o Compiler
+Compiler: CompilerMain.o LexAnalyzer.o ParserCodegen.o
+	$(COMP) CompilerMain.o LexAnalyzer.o ParserCodegen.o -o Compiler
 
-CompilerMain.o: CompilerMain.c LexAnalyzer.h
+CompilerMain.o: CompilerMain.c LexAnalyzer.h ParserCodegen.h
 	$(COMP) -c CompilerMain.c
 
 LexAnalyzer.o: LexAnalyzer.c LexAnalyzer.h
 	$(COMP) -c LexAnalyzer.c
+
+ParserCodegen.o: ParserCodegen.c ParserCodegen.h CompilerMain.h LexAnalyzer.h
+	$(COMP) -c ParserCodegen.c
 
 clean:
 	@echo "clean project"

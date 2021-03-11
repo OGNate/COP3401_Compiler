@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-#include "LexAnalyzer.h"
+#include "CompilerMain.h"
 
 /*
     To-Do:
@@ -19,6 +14,10 @@ int main(int argc, char *argv[]) {
     // which tokenizes every valid symbol, digit, and alpha in the given text. If it runs without error, it will
     // return the lexeme array which will then be used by the Parser in the next step of the compiler process.
     lexeme *Lexical_Tokens_Array = LexMain(argc, argv); 
+    int lexeme_Size = 0;
+
+    ParserCodegenMain(Lexical_Tokens_Array);
+
 
     printf("Completed to here");
 }

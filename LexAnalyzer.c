@@ -31,13 +31,13 @@ int get_Token_Type(char *identifier, int state) {
         if(strcmp(identifier, "then") == 0) return 24;
         if(strcmp(identifier, "while") == 0) return 25;
         if(strcmp(identifier, "do") == 0) return 26;
-        if(strcmp(identifier, "call") == 0) return 27;
+        //if(strcmp(identifier, "call") == 0) return 27;
         if(strcmp(identifier, "const") == 0) return 28;
         if(strcmp(identifier, "var") == 0) return 29;
-        if(strcmp(identifier, "procedure") == 0) return 30;
+        //if(strcmp(identifier, "procedure") == 0) return 30;
         if(strcmp(identifier, "write") == 0) return 31;
         if(strcmp(identifier, "read") == 0) return 32;
-        if(strcmp(identifier, "else") == 0) return 33;
+        //if(strcmp(identifier, "else") == 0) return 33;
         if(strcmp(identifier, "return") == 0) return 34;
         else return -1;
     } else {
