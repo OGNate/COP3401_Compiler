@@ -8,6 +8,9 @@
 
 #include "LexAnalyzer.h"
 #include "ParserCodegen.h"
+#include "VM.h"
+
+#define MAX_SIZE 5000
 
 int main(int argc, char *argv[]);
 

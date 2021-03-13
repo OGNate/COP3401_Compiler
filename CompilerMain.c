@@ -2,8 +2,7 @@
 
 /*
     To-Do:
-        1) Work on implimenting The Parser
-        2) Work on implimenting the Code Generator
+        2) Create a general assembly print for the Parser and CodeGen
         3) Work on creating and using the different type of flags for priting information
         4) Pass the Code gen to the VM
 
@@ -16,7 +15,13 @@ int main(int argc, char *argv[]) {
     lexeme *Lexical_Tokens_Array = LexMain(argc, argv); 
     int lexeme_Size = 0;
 
-    ParserCodegenMain(Lexical_Tokens_Array);
+    instruction *VM_Instructions = ParserCodegenMain(Lexical_Tokens_Array);
+
+    int i = 0;
+    while(VM_Instructions[i].opcode != 0) { // WE check for 0 since there will never be a 0 in the opcode spot
+        printf("%d %d %d\n", VM_Instructions[i].opcode, VM_Instructions[i].l, VM_Instructions[i].m);
+        i++;
+    }
 
 
     printf("Completed to here");
