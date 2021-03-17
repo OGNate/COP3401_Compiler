@@ -1,6 +1,15 @@
 #ifndef VM_H
 #define VM_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// 50
+// 100
+#define MAX_STACK_HEIGHT 5000
+#define MAX_CODE_LENGTH 5000
+
 typedef struct instruction{
     int opcode;
     char op[4];
@@ -9,6 +18,6 @@ typedef struct instruction{
 } instruction;
 
 int base(int stack[], int level, int BP);
-int main(int argc, char *argv[]);
+void VM_Main(instruction *VM_Instructions);
 
 #endif

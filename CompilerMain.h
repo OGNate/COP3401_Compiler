@@ -7,8 +7,8 @@
 #include <ctype.h>
 
 #include "LexAnalyzer.h"
-#include "ParserCodegen.h"
 #include "VM.h"
+#include "ParserCodegen.h"
 
 #define MAX_SIZE 5000
 

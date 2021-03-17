@@ -1,11 +1,5 @@
 #include "ParserCodegen.h"
 
-/*
-    To-Do:
-        1) Work on the other segments after the Variable declaration in the assignement
-*/
-
-
 // ----------------------------------------------------------------------------------------------------------------------------------------
 // Checks the symbol table to see if the searched for name is found. If so, it will return the index, if not, it will
 // return -1.

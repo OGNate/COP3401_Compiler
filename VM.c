@@ -4,20 +4,7 @@
     COP3402 -> Systems Software -> Spring 2021
     Professor Montagne
 */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define MAX_STACK_HEIGHT 50
-#define MAX_CODE_LENGTH 100
-
-typedef struct instruction{
-    int opcode;
-    char op[4];
-    int l;
-    int m;
-} instruction;
+#include "VM.h"
 
 // Base function used to help find a variable in a different activation record some L levels down.
 int base(int stack[], int level, int BP) {
@@ -31,16 +18,13 @@ int base(int stack[], int level, int BP) {
     return base;
 }
 
-int main(int argc, char *argv[]) {
+void VM_Main(instruction *VM_Instructions) {
     instruction IR;
-
-    // The name of the input file is given through command line arguments
-    FILE * inputFile = fopen(argv[1], "r");
 
     // Creates an array called text of type Instruction_Register with a max length of MAX_CODE_LENGTH
     instruction text[MAX_CODE_LENGTH];
 
-    // Creates our stack array called "stack" of type int witha  max length of MAX_STACK_HEIGHT
+    // Creates our stack array called "stack" of type int with a max length of MAX_STACK_HEIGHT
     int stack[MAX_STACK_HEIGHT];
 
     // An array that holds the index of the SP when the CAL of a function is made. The array and the height are used
@@ -56,15 +40,16 @@ int main(int argc, char *argv[]) {
     // Incremental value used to get all values from the input file
     int textIncrementor = 0;
 
-    // Will run until the end of the inputFile. This while loop will take in each value from each line
-    // and assign each newInstruction to the text array.
-    while(!feof(inputFile)) {
-        fscanf(inputFile, "%d %d %d", &text[textIncrementor].opcode, &text[textIncrementor].l, &text[textIncrementor].m);
+    int VM_Counter = 0; // Virtual Machine Counter
+
+    // Copies all the VM_Instruction from the Parser Codegen to the Virtual Machine
+    while(VM_Instructions[VM_Counter].opcode != 0) {
+        text[textIncrementor].opcode = VM_Instructions[VM_Counter].opcode;
+        text[textIncrementor].l = VM_Instructions[VM_Counter].l;
+        text[textIncrementor].m = VM_Instructions[VM_Counter].m;
+        VM_Counter++;
         textIncrementor++;
     }
-
-    // Closes the file stream
-    fclose(inputFile);
 
     // Setting up Initial Values
     int SP = -1;
@@ -341,7 +326,6 @@ int main(int argc, char *argv[]) {
 
             default:
                 printf("Invalid Operation - Ending Program\n");
-                return 0;
                 break;
         }
 
