@@ -16,11 +16,10 @@ typedef struct lexeme{
 }lexeme;  
 
 int get_Token_Type(char *identifier, int state);
-lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Words_Len, char character);
-void comment_Check(FILE *inputFile);
+lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Words_Len, char character, int L_Directive);
 void print_Lexeme_Array(lexeme *lexeme_Array, const int lexeme_Iterator);
-lexeme validNum_Check(FILE *inputFile, char digit);
-lexeme operand_Check(FILE *inputFile, char character);
-lexeme* LexMain(int argc, char *argv[]);
+lexeme validNum_Check(FILE *inputFile, char digit, int L_Directive);
+lexeme operand_Check(FILE *inputFile, char character, int L_Directive);
+lexeme* LexMain(int argc, char *argv[], int L_Directive);
 
 #endif

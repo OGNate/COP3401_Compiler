@@ -18,6 +18,6 @@ typedef struct instruction{
 } instruction;
 
 int base(int stack[], int level, int BP);
-void VM_Main(instruction *VM_Instructions);
+void VM_Main(instruction *VM_Instructions, int V_Directive);
 
 #endif

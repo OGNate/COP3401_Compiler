@@ -4,6 +4,65 @@
 instruction VM_Instructions[MAX_SYMBOL_TABLE_SIZE];    // Global variable that can be modified from anywhere in the program
 int VM_Instructions_Size = 0;   // Keeps track of the size of the VM
 
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// This function retrieves the cooresponding 3-letter Operator name for the given OP_Code
+char* get_OP_Name(int OP_Code) {
+    char* op_Name = malloc(sizeof(char) * 4);
+    switch(OP_Code){
+        case 1: 
+            strcpy(op_Name, "LIT");
+            break;
+        
+        case 2:
+            strcpy(op_Name, "OPR");
+            break;
+
+        case 3:
+            strcpy(op_Name, "LOD");
+            break;
+
+        case 4:
+            strcpy(op_Name, "STO");
+            break;
+
+        case 5:
+            strcpy(op_Name, "CAL");
+            break;
+
+        case 6:
+            strcpy(op_Name, "INC");
+            break;
+
+        case 7:
+            strcpy(op_Name, "JMP");
+            break;
+
+        case 8:
+            strcpy(op_Name, "JPC");
+            break;
+
+        case 9:
+            strcpy(op_Name, "SYS");
+            break;
+
+        default:
+            break;
+    }
+    return op_Name;
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+// This function prints General Assembly of the compiler
+void print_General_Assembly() {
+    printf("Generated Assembly:\n");
+    printf("Line\tOP\tL\tM\n");
+    
+    for(int i = 0; i < VM_Instructions_Size; i++) {
+        printf("%d\t%s\t%d\t%d\n", i, get_OP_Name(VM_Instructions[i].opcode), VM_Instructions[i].l, VM_Instructions[i].m);
+    }
+    printf("\n\n");
+}
+
 // ----------------------------------------------------------------------------------------------------------------------------------------
 // Checks the symbol table to see if the searched for name is found. If so, it will return the index, if not, it will
 // return -1.
@@ -514,7 +573,7 @@ void Program(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[]
 
 // ------------------------------------------------------------------------------------------------------------------------------------------
 // MAIN function that runs through the entire parsing and code generation process
-instruction *ParserCodegenMain(lexeme *Lex_Token_Array) {
+instruction *ParserCodegenMain(lexeme *Lex_Token_Array, int A_Directive) {
     symbol symbol_Table[MAX_SYMBOL_TABLE_SIZE]; // Creates an array of type symbol with a size of MAX_SYMBOL_TABLE_SIZE
     int symbol_Table_Size = 0;
 
@@ -523,6 +582,9 @@ instruction *ParserCodegenMain(lexeme *Lex_Token_Array) {
 
     // Starts the parsing and code generation process
     Program(lexeme_Array, &lexeme_Array_Size, symbol_Table, &symbol_Table_Size);
+
+    // Prints the General Assembly only if the A_Directive is given
+    if(A_Directive == 1) print_General_Assembly();
 
     return VM_Instructions;
 }

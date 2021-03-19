@@ -48,7 +48,7 @@ int get_Token_Type(char *identifier, int state) {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // IF the newLexeme.next_Character == #, then that means there was no special symbol behind it
 // check_Ident_or_RW is a function that is used to check whether a word beginning with a letter is a reserved word or an identifier.
-lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Words_Len, char character) {
+lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Words_Len, char character, int L_Directive) {
     lexeme newLexeme;
 
     // Creates a string
@@ -75,7 +75,7 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
                     strcpy(newLexeme.next_Character, "#");
                     newLexeme.tokenType = get_Token_Type(identifier, 2);
 
-                    printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                    if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                     return newLexeme;
                 }
             }
@@ -84,7 +84,7 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
             strcpy(newLexeme.lexeme, identifier);
             strcpy(newLexeme.next_Character, "#");
             newLexeme.tokenType = 2;
-            printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+            if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
             return newLexeme;
         }
 
@@ -98,7 +98,7 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
                     strncpy(newLexeme.next_Character, &character, 1);
                     newLexeme.tokenType = get_Token_Type(identifier, 2);
 
-                    printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                    if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                     return newLexeme;
                 }
             }
@@ -107,7 +107,7 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
             strcpy(newLexeme.lexeme, identifier);
             strncpy(newLexeme.next_Character, &character, 1);
             newLexeme.tokenType = 2;
-            printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+            if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
             return newLexeme;
         }
 
@@ -117,6 +117,7 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
         // the given max length.
         if((isalpha(character) != 0 || isdigit(character) != 0) && (strlen(identifier) > MAX_ID_LEN)) {
             printf("Error: Identifier names cannot exceed 11 characters\n");
+            exit(-1);
 
             character = fgetc(inputFile);
 
@@ -153,7 +154,7 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
                 strcpy(newLexeme.next_Character, "#");
                 newLexeme.tokenType = get_Token_Type(identifier, 2);
 
-                printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                 return newLexeme;
             }
         }
@@ -161,25 +162,8 @@ lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Wo
         strcpy(newLexeme.lexeme, identifier);
         strcpy(newLexeme.next_Character, "#");
         newLexeme.tokenType = 2;
-        printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+        if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
         return newLexeme;
-    }
-}
-
-// This function checks whether the following charcter behind / is a *. If so, there is a comment.
-// It will continue to read in characters without tokenizing any of them until */ is reached.
-void comment_Check(FILE *inputFile) {
-    char character = fgetc(inputFile);
-
-    if(character == '*') {
-        while(1) {
-            character = fgetc(inputFile);
-
-            if(character == '*') {
-                character = fgetc(inputFile);
-                if(character == '/') break;
-            }
-        }
     }
 }
 
@@ -199,7 +183,7 @@ void print_Lexeme_Array(lexeme *lexeme_Array, const int lexeme_Iterator) {
 
 
 // IF the next_character is == #, then there is not a special symbol after the number
-lexeme validNum_Check(FILE *inputFile, char digit) {
+lexeme validNum_Check(FILE *inputFile, char digit, int L_Directive) {
     lexeme newLexeme;
 
     char number[MAX_NUM_LEN + 2] = "";
@@ -220,17 +204,18 @@ lexeme validNum_Check(FILE *inputFile, char digit) {
                     strcpy(newLexeme.lexeme, number);
                     strcpy(newLexeme.next_Character, "#");
                     newLexeme.tokenType = 3;
-                    printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                    if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                     return newLexeme;
                 } else {
                     strcpy(newLexeme.lexeme, number);
                     strncpy(newLexeme.next_Character, &digit, 1);
                     newLexeme.tokenType = 3;
-                    printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                    if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                     return newLexeme;
                 }
             } else if(isalpha(digit) != 0) {    // This else if statement checks alpha characters and handles the error.
                 printf("Error: Identifiers cannot begin with a digit\n");
+                exit(-1);
 
                 // Continues reading in characters until a non-alpha or non-digit is hit
                 while(isalpha(digit) != 0 || isdigit(digit) != 0) digit = fgetc(inputFile);
@@ -251,6 +236,7 @@ lexeme validNum_Check(FILE *inputFile, char digit) {
         } else { // If number is greater than or equal to the MAX_NUM_LEN and the next char is a digit or alpha, the number excess error will appear
             if(isdigit(digit) != 0 || isalpha(digit) != 0) {
                 printf("Error: Numbers cannot exceed 5 digits\n");
+                exit(-1);
 
                 while(isdigit(digit) != 0 || isalpha(digit) != 0) digit = fgetc(inputFile);
 
@@ -270,13 +256,13 @@ lexeme validNum_Check(FILE *inputFile, char digit) {
                     strcpy(newLexeme.lexeme, number);
                     strncpy(newLexeme.next_Character, &digit, 1);
                     newLexeme.tokenType = 3;
-                    printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                    if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                     return newLexeme;
                 } else {
                     strcpy(newLexeme.lexeme, number);
                     strcpy(newLexeme.next_Character, "#");
                     newLexeme.tokenType = 3;
-                    printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+                    if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
                     return newLexeme;
                 }
             }
@@ -286,7 +272,7 @@ lexeme validNum_Check(FILE *inputFile, char digit) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // This function checks an operator to determine whether it is valid or not
-lexeme operand_Check(FILE *inputFile, char character) {
+lexeme operand_Check(FILE *inputFile, char character, int L_Directive) {
     lexeme newLexeme;
 
     char operator[3] = "";
@@ -301,6 +287,7 @@ lexeme operand_Check(FILE *inputFile, char character) {
 
         if(newLexeme.tokenType == -1) {
             printf("Error: Invalid Symbol\n");
+            exit(-1);
 
             strcpy(newLexeme.lexeme, "");
             strncpy(newLexeme.next_Character, &character, 1);
@@ -308,7 +295,7 @@ lexeme operand_Check(FILE *inputFile, char character) {
         } else {
             strcpy(newLexeme.lexeme, operator);
             strncpy(newLexeme.next_Character, &character, 1);
-            printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+            if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
             return newLexeme;
         }
     } else {    // If there is a potential second character to the special symbol
@@ -333,21 +320,21 @@ lexeme operand_Check(FILE *inputFile, char character) {
             newLexeme.tokenType = get_Token_Type(operator, 1);
             strcpy(newLexeme.lexeme, operator);
             strcpy(newLexeme.next_Character, "#");
-            printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+            if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
             return newLexeme;
         }
 
         newLexeme.tokenType = get_Token_Type(operator, 1);
         strcpy(newLexeme.lexeme, operator);
         strcpy(newLexeme.next_Character, "#");
-        printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+        if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
         return newLexeme;
     }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Main function reads through an entire inputfile and scans in all characters and tokenizes them
-lexeme* LexMain(int argc, char *argv[]) {
+lexeme* LexMain(int argc, char *argv[], int L_Directive) {
 
     // Creates an io stream to the inputfile
     FILE *inputFile = fopen(argv[1], "r");
@@ -362,8 +349,10 @@ lexeme* LexMain(int argc, char *argv[]) {
 
     char character;
 
-    printf("Lexeme Table:\n");
-    printf("\tlexeme   token type\n");
+    if(L_Directive == 1) {
+        printf("Lexeme Table:\n");
+        printf("\tlexeme   token type\n");
+    }
 
     character = fgetc(inputFile);
 
@@ -372,7 +361,7 @@ lexeme* LexMain(int argc, char *argv[]) {
         // Checks the first value of a potential identifer to see if its an alpha, if so, it will analyze the following characters to see
         // if it is a valid identifier or reserved word.
         if(isalpha(character) != 0) {
-            newLexeme = check_Ident_or_RW(inputFile, reserved_Words, sizeof(reserved_Words) / sizeof(reserved_Words[0]), character);
+            newLexeme = check_Ident_or_RW(inputFile, reserved_Words, sizeof(reserved_Words) / sizeof(reserved_Words[0]), character, L_Directive);
 
             // This checks to see if there is a potential special symbol right after an identifier. Z == no special symbol. If there's no Z,
             // character is assigned the value of the symbol right after the identifer while then continueing to the next iteration of the while loop.
@@ -398,7 +387,7 @@ lexeme* LexMain(int argc, char *argv[]) {
         // Checks the see if a character is a digit, if so, it will determine if the following digits will make a valid number or not.
         // If it is not a valid number, an error message will appear
         if(isdigit(character) != 0) {
-            newLexeme = validNum_Check(inputFile, character);
+            newLexeme = validNum_Check(inputFile, character, L_Directive);
 
             if(strcmp(newLexeme.next_Character, "#") != 0) {
                 character = newLexeme.next_Character[0];
@@ -426,12 +415,13 @@ lexeme* LexMain(int argc, char *argv[]) {
             // character symbol that does not have a valid first digit in the symbol set.
             if(is_Symbol == - 1 && character != ':') {
                 printf("Error: Invalid Symbol\n");
+                exit(-1);
                 character = fgetc(inputFile);
                 continue;
             } else { // Checks the rest of the symbols
                 for(int i = 0; i < sizeof(special_Symbols) / sizeof(special_Symbols[0]); i++) {
                     if((strncmp(special_Symbols[i], &character, 1) == 0) || character == ':') {
-                        newLexeme = operand_Check(inputFile, character);
+                        newLexeme = operand_Check(inputFile, character, L_Directive);
 
                         if(strcmp(newLexeme.next_Character, "#") != 0) {
                             character = newLexeme.next_Character[0];
@@ -456,10 +446,13 @@ lexeme* LexMain(int argc, char *argv[]) {
         character = fgetc(inputFile);
     }
 
-    // Prints the lexeme array
-    printf("\nToken List:\n");
-    print_Lexeme_Array(lexeme_Array, lexeme_Array_iterator);
-    printf("\n");
+
+    if(L_Directive == 1) {
+        // Prints the lexeme array
+        printf("\nToken List:\n");
+        print_Lexeme_Array(lexeme_Array, lexeme_Array_iterator);
+        printf("\n\n\n");
+    }
 
     // Closes the inputFile Stream
     fclose(inputFile);

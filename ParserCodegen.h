@@ -20,6 +20,8 @@ typedef struct symbol {
     int addr;       // M Address
 } symbol;
 
+char* get_OP_Name(int OP_Code);
+void print_General_Assembly();
 int symbol_Table_Check(const symbol symbol_Table[], const int *symbol_Table_Size, const char *search_Name);
 void add_To_SymTable(symbol symbol_Table[], int *symbol_Table_Size, int kind, char *name, int number, int level, int address);
 int get_Token(lexeme *lexeme_Array, int *lexeme_Array_Size);
@@ -33,7 +35,7 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
 void condition(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
 void block(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
 void Program(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size);
-instruction *ParserCodegenMain(lexeme *Lex_Token_Array);
+instruction *ParserCodegenMain(lexeme *Lex_Token_Array, int A_Directive);
 
 
 #endif
