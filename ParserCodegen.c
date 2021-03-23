@@ -9,10 +9,10 @@ int VM_Instructions_Size = 0;   // Keeps track of the size of the VM
 char* get_OP_Name(int OP_Code) {
     char* op_Name = malloc(sizeof(char) * 4);
     switch(OP_Code){
-        case 1: 
+        case 1:
             strcpy(op_Name, "LIT");
             break;
-        
+
         case 2:
             strcpy(op_Name, "OPR");
             break;
@@ -56,7 +56,7 @@ char* get_OP_Name(int OP_Code) {
 void print_General_Assembly() {
     printf("Generated Assembly:\n");
     printf("Line\tOP\tL\tM\n");
-    
+
     for(int i = 0; i < VM_Instructions_Size; i++) {
         printf("%d\t%s\t%d\t%d\n", i, get_OP_Name(VM_Instructions[i].opcode), VM_Instructions[i].l, VM_Instructions[i].m);
     }
@@ -66,7 +66,7 @@ void print_General_Assembly() {
 // ----------------------------------------------------------------------------------------------------------------------------------------
 // Checks the symbol table to see if the searched for name is found. If so, it will return the index, if not, it will
 // return -1.
-int symbol_Table_Check(const symbol symbol_Table[], const int *symbol_Table_Size, const char *search_Name) { 
+int symbol_Table_Check(const symbol symbol_Table[], const int *symbol_Table_Size, const char *search_Name) {
     for(int i = 0; i < (*symbol_Table_Size); i++) {
         if(strcmp(symbol_Table[i].name, search_Name) == 0) return i;
     }
@@ -113,10 +113,10 @@ void emit(int Op_Code, int L, int M) {
 // This function will Check whether there are any constants declared in the block. If so, it will check the validity as well. It will then
 // add the constants to the symbol table if no errors occur.
 void constant_Declaration(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token) {
-    (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Retrieves the next token 
-    
+    (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Retrieves the next token
+
     if((*token) == 28) {    // First checks if the read in token is a constant
-        do {    
+        do {
             (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
 
             if((*token) != 2) { // Checks to make sure that the token after const is an identifier. If not, an error will occur.
@@ -151,9 +151,9 @@ void constant_Declaration(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol s
             int integer_Value = atoi(lexeme_Array[ident_Value_Index].lexeme);   // Converts the numeric string value to an integer value
 
             // Adds the constant to the symbol table
-            add_To_SymTable(symbol_Table, symbol_Table_Size, 1, lexeme_Array[ident_Name_Index].lexeme, integer_Value, 0, 0);  
+            add_To_SymTable(symbol_Table, symbol_Table_Size, 1, lexeme_Array[ident_Name_Index].lexeme, integer_Value, 0, 0);
 
-            (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token            
+            (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
 
         } while((*token) == 17);    // This do-while loop will run while the token is a ",". It will always run at least once.
 
@@ -171,7 +171,7 @@ void constant_Declaration(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol s
 // This function take care of any variable declarations done within the block. If no errors occur with identifiers, symbol names, or missing
 // semicolons; the function will add the variables to the symbol table. The number of variables is returned.
 int variable_Declaration(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token) {
-    int num_Variables = 0; 
+    int num_Variables = 0;
 
     if((*token) == 29) {
         do {
@@ -348,7 +348,7 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
         // Case 2: Checks to see if the statement starts with an identifier
         case 2:
             // Checks to see if the identifier is in the symbol table
-            symbol_Index = symbol_Table_Check(symbol_Table, symbol_Table_Size, lexeme_Array[(*lexeme_Array_Size) - 1].lexeme);  
+            symbol_Index = symbol_Table_Check(symbol_Table, symbol_Table_Size, lexeme_Array[(*lexeme_Array_Size) - 1].lexeme);
 
             if(symbol_Index == -1) {    // If the identifier is not found in the symbol table (-1), an error will occur and the program will exit
                 printf("undeclared symbol\n");
@@ -379,7 +379,7 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
             do {
                 (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
 
-                statement(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token); // Recursive call to STATEMENT 
+                statement(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token); // Recursive call to STATEMENT
             } while((*token) == 18);    // Continues to loop while there are statements within the "begin" and "end" keywords
 
             if((*token) != 22) {    // Checks to make sure there is eventually an "end" keyword, if not an error occurs and the program will exit
@@ -391,12 +391,12 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
             break;
 
         // Case 23: Checks to see if the statement starts with the word "if"
-        case 23: 
+        case 23:
             (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
 
             condition(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token); // Checks to see what the condition is in the expression
 
-            jpc_Index = VM_Instructions_Size - 1;   // Gets the current Top index of the Virtual Machine Instructions array
+            jpc_Index = VM_Instructions_Size;   // Gets the current Top index of the Virtual Machine Instructions array
 
             emit(8, 0, jpc_Index);  // Adds the JPC instruction to the Virtual Machine Instructions Array
 
@@ -409,14 +409,14 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
 
             statement(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token); // Recursively calls the statement function to check for any other statements
 
-            VM_Instructions[jpc_Index].m = VM_Instructions_Size - 1;    // Jumps to the current top of the Virtual Machine Instructions Array
+            VM_Instructions[jpc_Index].m = VM_Instructions_Size;    // Jumps to the current top of the Virtual Machine Instructions Array
             break;
 
         // Case 25: Checks to see if the statement starts with the keyword "while"
         case 25:
             (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
 
-            int loop_Index = VM_Instructions_Size - 1; // Gets the current top index of the Virtual Machine Instructions Array
+            int loop_Index = VM_Instructions_Size; // Gets the current top index of the Virtual Machine Instructions Array
 
             condition(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token); // Checks the conditions after the "while" keyword
 
@@ -427,7 +427,7 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
 
             (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
 
-            jpc_Index = VM_Instructions_Size - 1;   // Gets the current top index of the VM Instructions Array
+            jpc_Index = VM_Instructions_Size;   // Gets the current top index of the VM Instructions Array
 
             emit(8, 0, jpc_Index);  // Adds the JPC instruction to the Virtual Machine Instructions Array
 
@@ -435,7 +435,7 @@ void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
 
             emit(7, 0, loop_Index); // Adds the JMP instruction to the Virtual Machine Instructions Array
 
-            VM_Instructions[jpc_Index].m = VM_Instructions_Size - 1;    // Jumps to the current top of the Virtual Mahine Instructions Array
+            VM_Instructions[jpc_Index].m = VM_Instructions_Size;    // Jumps to the current top of the Virtual Mahine Instructions Array
             break;
 
         // Case 32: Checks to see if the statement starts with the keyword "read"
@@ -494,11 +494,11 @@ void condition(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
         switch(*token) {
             // Case 9: Handles the "=" equals symbol
             case 9:
-                (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token 
+                (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
                 expression(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token);    // Calls the expression function to find out the expression after the condition
                 emit(2, 0, 8);      // Adds the Equals symbol (EQL) instruction to the Virtual Machine Instructions Array
                 break;
-            
+
             // Case 10: Handles the "<>" not equals symbol
             case 10:
                 (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
@@ -511,7 +511,7 @@ void condition(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
                 (*token) = get_Token(lexeme_Array, lexeme_Array_Size);  // Reading in a new token
                 expression(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token);    // Calls the expression function to find out the expression after the condition
                 emit(2, 0, 10);      // Adds the Less symbol (LSS) instruction to the Virtual Machine Instructions Array
-                break;    
+                break;
 
             // Case 12: Handles the "<=" less than or equal to symbol
             case 12:
@@ -547,13 +547,13 @@ void condition(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table
 // and handle any statements that come after it. It will also create space to eventually generate code for the variables and constants.
 void block(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token) {
     // Checks to see if there are any constants in the block. If so, with no errors, they will be added to the symbol Table.
-    constant_Declaration(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token);  
+    constant_Declaration(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token);
 
     // Checks to see if there are any variables in the block declaration
     int num_Vars = variable_Declaration(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token);
 
     emit(6, 0, num_Vars + 4);   // Adds the increment (INC) instruction to the Virtual Machine Instructions Array
-    
+
     statement(lexeme_Array, lexeme_Array_Size, symbol_Table, symbol_Table_Size, token); // Calls the statement function
 }
 
