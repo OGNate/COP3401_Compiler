@@ -23,6 +23,12 @@ int token = -1;     // Token is used to get the next token in the token list
 
 // HELPER FUNCTIONS
 
+void print_VM_Instructions() {
+    for(int i = 0; i < VM_Instruct_Size; i++) {
+        printf("%d %d %d\n", VM_Instructions[i].opcode, VM_Instructions[i].l, VM_Instructions[i].m);
+    }
+}
+
 void print_Symbol_Table() {
     for(int i = 0; i < symbol_Table_Size; i++) printf("%d %s %d %d %d %d %d\n", symbol_Table[i].kind, symbol_Table[i].name, symbol_Table[i].val, symbol_Table[i].level, symbol_Table[i].addr, symbol_Table[i].mark, symbol_Table[i].param);
 }
@@ -66,9 +72,7 @@ void Mark(int count) {
         if(symbol_Table[i].mark == 0) {
             symbol_Table[i].mark = 1;
             count--;
-        } else {
-            continue;
-        }
+        } 
     }
 }
 
@@ -144,8 +148,6 @@ void Print_General_Assembly() {
     }
     printf("\n\n");
 }
-
-
 
 // ------------------------------------------------------------------------------------------------------------------------------------------
 // Const_Declaration determines how many valid constants are in the given code. It will then return the amount to Block. 
@@ -288,7 +290,7 @@ int Procedure_Declaration(int lex_Level) {
                 token = Get_Token();    // Gets next token
 
                 if(token != 2) {    // Checks if the token is an identifier
-                    printf("Error: parameters may only pbe specified by an identifier\n");
+                    printf("Error: parameters may only be specified by an identifier\n");
                     exit(-1);
                 }
 
@@ -382,7 +384,7 @@ void Statement(int lex_Level) {
         int symbol_Index = Symbol_Table_Search(lex_Array[lex_Array_Size - 1].lexeme, lex_Level, 3);
 
         if(symbol_Index == -1) {    // If the procedure was not found in the symbol table, this error will throw.
-            printf("Error: undeclared procedure for call HERE");
+            printf("Error: undeclared procedure for call");
             exit(-1);
         }
 
@@ -680,7 +682,7 @@ void Factor(int lex_Level) {
             Emit(1, 0, symbol_Table[symbol_Index_C].val);   // Emits LIT to the Virtual Machine
         }
     } else if(token == 3) { // Checks for an integer number
-        Emit(1, 0, 0);  // Emits LIT to the Virtual Machine
+        Emit(1, 0, atoi(lex_Array[lex_Array_Size - 1].lexeme));  // Emits LIT to the Virtual Machine
         token = Get_Token();    // Gets next token
 
     } else if(token == 15) {    // Checks for left parenthesis "("

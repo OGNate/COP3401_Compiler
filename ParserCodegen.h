@@ -23,6 +23,7 @@ typedef struct symbol {
 } symbol;
 
 // Helper Functions
+void print_VM_Instructions();
 void print_Symbol_Table();
 void Emit(int OP_Code, int L, int M);
 void Add_To_SymTable(int kind, char *name, int number, int level, int address, int mark, int param);
