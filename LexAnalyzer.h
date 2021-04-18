@@ -15,6 +15,7 @@ typedef struct lexeme{
     char next_Character[2];
 }lexeme;  
 
+int get_Lexeme_Size();
 int get_Token_Type(char *identifier, int state);
 lexeme check_Ident_or_RW(FILE *inputFile, char **reserved_Words, int reserved_Words_Len, char character, int L_Directive);
 void print_Lexeme_Array(lexeme *lexeme_Array, const int lexeme_Iterator);
