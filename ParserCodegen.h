@@ -2,40 +2,49 @@
 #define PCG_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #include "CompilerMain.h"
 #include "LexAnalyzer.h"
 #include "VM.h"
 
-#define MAX_SYMBOL_TABLE_SIZE 5000
+#define MAX_SYMBOL_TABLE_SIZE 500
 
 typedef struct symbol {
-    int kind;       // Const = 1, Var = 2
-    char name[12];  // Name up to 12 characters long
+    int kind;       // Const = 1 , Var = 2, Procedure = 3
+    char name[10];
     int val;        // Number
     int level;      // Lexigraphical Level
-    int addr;       // M Address
+    int addr;       // Address
+    int mark;       // Used to indicate that code has been generated already for a block    
+    int param;      // Used to indicate if the parameter for a procedure has been declared
 } symbol;
 
+// Helper Functions
+void print_Symbol_Table();
+void Emit(int OP_Code, int L, int M);
+void Add_To_SymTable(int kind, char *name, int number, int level, int address, int mark, int param);
+int Get_Token();
+int Find_Procedure(int prodecureIndex);
+void Mark(int count);
+int Symbol_Table_Check(char *checkName, int checkLevel);
+int Symbol_Table_Search(char *name, int lex_Level, int kind);
 char* get_OP_Name(int OP_Code);
-void print_General_Assembly();
-int symbol_Table_Check(const symbol symbol_Table[], const int *symbol_Table_Size, const char *search_Name);
-void add_To_SymTable(symbol symbol_Table[], int *symbol_Table_Size, int kind, char *name, int number, int level, int address);
-int get_Token(lexeme *lexeme_Array, int *lexeme_Array_Size);
-void emit(int Op_Code, int L, int M);
-void constant_Declaration(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-int variable_Declaration(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void factor(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void term(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void expression(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void statement(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void condition(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void block(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size, int *token);
-void Program(lexeme *lexeme_Array, int *lexeme_Array_Size, symbol symbol_Table[], int *symbol_Table_Size);
-instruction *ParserCodegenMain(lexeme *Lex_Token_Array, int A_Directive);
+void Print_General_Assembly();
 
+// Main Code Segments
+int Const_Declaration(int lex_Level);
+int Variable_Declaration(int lex_Level, int param);
+int Procedure_Declaration(int lex_Level);
+void Statement(int lex_Level);
+void Condition(int lex_Level);
+void Expression(int lex_Level);
+void Term(int lex_Level);
+void Factor(int lex_Level);
+void Block(int lexLevel, int param, int prodedureIndex);
+void Program();
+instruction *ParserCodegenMain(lexeme *Lex_Token_Array, int A_Directive);
 
 #endif
