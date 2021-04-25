@@ -306,6 +306,16 @@ lexeme operand_Check(FILE *inputFile, char character, int L_Directive) {
             return newLexeme;
         }
     } else {    // If there is a potential second character to the special symbol
+
+        // Checks to see if there is a closing parenthesis ")" 
+        if(get_Token_Type(operator, 1) == 16 && get_Token_Type(&character, 1) == 18) {
+            newLexeme.tokenType = get_Token_Type(operator, 1);
+            strcpy(newLexeme.lexeme, operator);
+            strcpy(newLexeme.next_Character, &character);
+            if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
+            return newLexeme;
+        } 
+
         strncat(operator, &character, 1);
 
         if(strcmp(operator, "/*") == 0) {
@@ -330,10 +340,11 @@ lexeme operand_Check(FILE *inputFile, char character, int L_Directive) {
             if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
             return newLexeme;
         }
-
+        
         newLexeme.tokenType = get_Token_Type(operator, 1);
         strcpy(newLexeme.lexeme, operator);
         strcpy(newLexeme.next_Character, "#");
+
         if(L_Directive == 1) printf("\t%s   %d\n", newLexeme.lexeme, newLexeme.tokenType);
         return newLexeme;
     }
@@ -430,13 +441,13 @@ lexeme* LexMain(int argc, char *argv[], int L_Directive) {
                         newLexeme = operand_Check(inputFile, character, L_Directive);
 
                         if(strcmp(newLexeme.next_Character, "#") != 0) {
-                            character = newLexeme.next_Character[0];
+                            character = newLexeme.next_Character[0]; 
 
                             if(newLexeme.tokenType >= 1) {
                                 lexeme_Array[lexeme_Array_iterator] = newLexeme;
                                 lexeme_Array_iterator++;
                             }
-                            continue;
+                            break;
                         }
 
                         if(newLexeme.tokenType >= 1) {
@@ -447,6 +458,7 @@ lexeme* LexMain(int argc, char *argv[], int L_Directive) {
                         character = fgetc(inputFile);
                     }
                 }
+                continue;
             }
         }
         character = fgetc(inputFile);
